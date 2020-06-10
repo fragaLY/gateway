@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.cloud.gateway: INFO      
+
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: notification-service
+        uri: http://localhost:8080
+        predicates:
+          - Path=/api/notifications/**
+        filters:
+          - name: NotificationPreFilter
+          - name: NotificationPostFilter
