@@ -22,10 +22,9 @@ class NotificationPostFilter : AbstractGatewayFilterFactory<NotificationPostFilt
         return GatewayFilter { exchange: ServerWebExchange?, chain: GatewayFilterChain ->
             chain.filter(exchange)
                 .then(Mono.fromRunnable {
+                    logger.info("[GATEWAY] Post filter")
                     when (exchange?.response?.statusCode) {
-                        HttpStatus.NO_CONTENT -> exchange.response.headers.set(
-                            "post-filter", mutableListOf(UUID.randomUUID().toString())
-                        ).run { logger.info("[GATEWAY] Post filter") }
+                        HttpStatus.CREATED -> exchange.response.headers["post-filter"] = mutableListOf(UUID.randomUUID().toString())
                         else -> logger.warn("[GATEWAY] Something went wrong. Response status is [${exchange?.response?.statusCode}]")
                     }
                 })
